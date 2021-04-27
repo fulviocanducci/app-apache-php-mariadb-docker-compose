@@ -1,0 +1,49 @@
+version: '3.4'
+
+services: 
+    webapache:
+        container_name: webapache
+        tty: true
+        build: 
+            context: .
+            dockerfile: Dockerfile
+        volumes: 
+            - ./src:/var/www/html/  
+        expose: 
+            - 80
+            - 8000
+        ports:
+            - 8000:80
+        networks: 
+            - localnet
+    mariadb:
+        container_name: mariadb
+        image: mariadb
+        tty: true
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: 1234@@
+        expose: 
+            - 3306
+            - 3309
+        ports: 
+            - 3309:3306
+        networks: 
+            - localnet
+        volumes: 
+            - mysql-data:/var/lib/mysql:rw
+    adminer:
+        container_name: adminer
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
+        networks: 
+            - localnet
+
+networks: 
+    localnet:
+        driver: bridge
+volumes:
+    mysql-data:
+        driver: "local"
